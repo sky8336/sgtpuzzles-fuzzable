@@ -42,7 +42,7 @@ fi
 if test "x$GCC" = "xyes"; then
   AC_MSG_CHECKING([for usable gcc warning flags])
   gccwarningflags=
-  for flag in -Wall -Werror -std=c89 -pedantic; do
+  for flag in -Wall -std=c89 -pedantic; do
     ac_save_CFLAGS="$CFLAGS"
     ac_save_LIBS="$LIBS"
     CFLAGS="$CFLAGS$gccwarningflags $flag $GTK_CFLAGS"

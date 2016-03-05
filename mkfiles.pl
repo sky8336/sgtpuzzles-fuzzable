@@ -1147,7 +1147,7 @@ if (defined $makefiles{'gtk'}) {
     "# to 1.2 if it isn't found.\n".
     "GTK_CONFIG = sh -c 'pkg-config gtk+-2.0 \$\$0 2>/dev/null || gtk-config \$\$0'\n".
     "\n".
-    &splitline("CFLAGS := -O2 -Wall -Werror -ansi -pedantic -g " .
+    &splitline("CFLAGS := -O2 -Wall -ansi -pedantic -g " .
 	       (join " ", map {"-I$dirpfx$_"} @srcdirs) .
 	       " `\$(GTK_CONFIG) --cflags` \$(CFLAGS)")."\n".
     "XLIBS = `\$(GTK_CONFIG) --libs` -lm\n".
@@ -1281,6 +1281,7 @@ if (defined $makefiles{'am'}) {
             push @ldadd, "\$(GTK_LIBS)";
         }
         push @ldadd, "-lm";
+        push @ldadd, "-lxdo";
         print &splitline(join " ", "${prog}_LDADD", "=", @ldadd), "\n";
         print "\n";
     }
@@ -1527,7 +1528,7 @@ if (defined $makefiles{'nestedvm'}) {
     "TOOLPATH = \$(NESTEDVM)/upstream/install/bin\n".
     "CC = \$(TOOLPATH)/mips-unknown-elf-gcc\n".
     "\n".
-    &splitline("CFLAGS = -O2 -Wall -Werror -DSLOW_SYSTEM -g " .
+    &splitline("CFLAGS = -O2 -Wall -DSLOW_SYSTEM -g " .
 	       (join " ", map {"-I$dirpfx$_"} @srcdirs))."\n".
     "\n";
     print &splitline("all:" . join "", map { " $_.jar" } &progrealnames("X"));
@@ -1577,7 +1578,7 @@ if (defined $makefiles{'osx'}) {
     "CC = \$(TOOLPATH)gcc\n".
     "LIPO = \$(TOOLPATH)lipo\n".
     "\n".
-    &splitline("CFLAGS = -O2 -Wall -Werror -g " .
+    &splitline("CFLAGS = -O2 -Wall -g " .
 	       (join " ", map {"-I$dirpfx$_"} @srcdirs))."\n".
     "LDFLAGS = -framework Cocoa\n".
     &splitline("all:" . join "", map { " $_" } &progrealnames("MX:U")) .

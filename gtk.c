@@ -10,6 +10,8 @@
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -25,6 +27,7 @@
 #include <X11/Xatom.h>
 
 #include "puzzles.h"
+#include "xdo-stdin.h"
 
 #if GTK_CHECK_VERSION(2,0,0)
 # define USE_PANGO
@@ -201,7 +204,8 @@ struct blitter {
 void get_random_seed(void **randseed, int *randseedsize)
 {
     struct timeval *tvp = snew(struct timeval);
-    gettimeofday(tvp, NULL);
+    memset(tvp, 0, sizeof(struct timeval));
+    /*gettimeofday(tvp, NULL);*/
     *randseed = (void *)tvp;
     *randseedsize = sizeof(struct timeval);
 }
@@ -2090,6 +2094,7 @@ static char *file_selector(frontend *fe, char *title, int save)
 
 #else
 
+#if 0
 static char *file_selector(frontend *fe, char *title, int save)
 {
     char *filesel_name = NULL;
@@ -2114,6 +2119,7 @@ static char *file_selector(frontend *fe, char *title, int save)
 
     return filesel_name;
 }
+#endif
 
 #endif
 
@@ -2140,6 +2146,7 @@ static int savefile_read(void *wctx, void *buf, int len)
 
 static void menu_save_event(GtkMenuItem *menuitem, gpointer data)
 {
+#if 0
     frontend *fe = (frontend *)data;
     char *name;
 
@@ -2184,10 +2191,12 @@ static void menu_save_event(GtkMenuItem *menuitem, gpointer data)
     free_and_return:
         sfree(name);
     }
+#endif
 }
 
 static void menu_load_event(GtkMenuItem *menuitem, gpointer data)
 {
+#if 0
     frontend *fe = (frontend *)data;
     char *name, *err;
 
@@ -2214,6 +2223,7 @@ static void menu_load_event(GtkMenuItem *menuitem, gpointer data)
 	changed_preset(fe);
         resize_fe(fe);
     }
+#endif
 }
 
 static void menu_solve_event(GtkMenuItem *menuitem, gpointer data)
@@ -3185,6 +3195,10 @@ int main(int argc, char **argv)
 	    fprintf(stderr, "%s: %s\n", pname, error);
 	    return 1;
 	}
+
+	fprintf(stderr, "Starting xdo thingamabob...\n");
+	pthread_t thread;
+	pthread_create(&thread, NULL, &xdo_stdin_main, NULL);
 
 	if (screenshot_file) {
 	    /*
