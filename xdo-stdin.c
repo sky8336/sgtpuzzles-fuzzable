@@ -1,3 +1,26 @@
+/* Copyright (c) 2016 Sami Liedes
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 /* NOTE: DISPLAY is currently hardcoded to ":1"
  * (because it was too easy to accidentally fuzz the wrong display)
  */
@@ -64,8 +87,9 @@ void *xdo_stdin_main(void *param) {
 
     while (1) {
 	int c = read_uint8();
+	c %= 5;
 	switch (c) {
-	case 'm':
+	case 0:
 	    {
 		/* move mouse */
 		int x = read_uint16()%800, y = read_uint16()%800;
@@ -74,11 +98,12 @@ void *xdo_stdin_main(void *param) {
 		do_sleep();
 	    }
 	    break;
-	case 'k':
+	case 1:
 	    {
 		/* keypress */
 		int letter = read_uint8();
-		char let[2] = {letter, 0};
+		char let[2] = {0};
+		let[0] = letter;
 		if (letter < 128 && isprint(letter)) {
 		    /* printf("keypress '%c' (%d)\n", let[0], letter); */
 		    xdo_enter_text_window(xdo, CURRENTWINDOW, let, 12000);
@@ -86,7 +111,7 @@ void *xdo_stdin_main(void *param) {
 		}
 	    }
 	    break;
-	case 'c':
+	case 2:
 	    {
 		/* click */
 		int button = read_mousebutton();
@@ -95,7 +120,7 @@ void *xdo_stdin_main(void *param) {
 		do_sleep();
 	    }
 	    break;
-	case 'd':
+	case 3:
 	    {
 		/* mouse down */
 		int button = read_mousebutton();
@@ -104,7 +129,7 @@ void *xdo_stdin_main(void *param) {
 		do_sleep();
 	    }
 	    break;
-	case 'u':
+	case 4:
 	    {
 		/* mouse up */
 		int button = read_mousebutton();
