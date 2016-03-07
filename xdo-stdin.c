@@ -36,8 +36,8 @@
 #include <string.h>
 #include <xdo.h>
 #include <time.h>
+#include <stdlib.h>
 
-const char *DISPLAY = ":1";
 const unsigned long DELAY = 1200;
 const long EXIT_AFTER = 200;
 
@@ -79,7 +79,20 @@ static void do_sleep() {
 }
 
 void *xdo_stdin_main(void *param) {
-    xdo_t *xdo = xdo_new(DISPLAY);
+    const char *DISPLAY = getenv("DISPLAY");
+    xdo_t *xdo;
+
+    if (!DISPLAY) {
+	fputs("DISPLAY variable not set.", stderr);
+	_exit(1);
+    }
+
+    if (strcmp(DISPLAY, ":0") == 0) {
+	fputs("Cowardly refusing to fuzz display :0.", stderr);
+	_exit(1);
+    }
+
+    xdo = xdo_new(DISPLAY);
     if (!xdo) {
 	fputs("No display.", stderr);
 	_exit(1);
