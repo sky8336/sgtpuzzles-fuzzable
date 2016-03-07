@@ -83,18 +83,18 @@ void *xdo_stdin_main(void *param) {
     xdo_t *xdo;
 
     if (!DISPLAY) {
-	fputs("DISPLAY variable not set.", stderr);
+	fputs("DISPLAY variable not set.\n", stderr);
 	_exit(1);
     }
 
     if (strcmp(DISPLAY, ":0") == 0) {
-	fputs("Cowardly refusing to fuzz display :0.", stderr);
+	fputs("Cowardly refusing to fuzz display :0.\n", stderr);
 	_exit(1);
     }
 
     xdo = xdo_new(DISPLAY);
     if (!xdo) {
-	fputs("No display.", stderr);
+	fputs("No display.\n", stderr);
 	_exit(1);
     }
 
